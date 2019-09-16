@@ -27,7 +27,6 @@ public class PropertyLoader {
 
     public static Properties getProperties(String propertyFile){
         loadProperty(propertyFile);
-        System.out.println(properties);
         return properties;
     }
 
