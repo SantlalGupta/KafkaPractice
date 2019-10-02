@@ -1,12 +1,19 @@
 package com.kafka.PropertyLoader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class PropertyLoader {
     static InputStream inputStream;
     static Properties properties = new Properties();
+
+    private static  Logger logger = LoggerFactory.getLogger(PropertyLoader.class.getName());
 
     private static void loadProperty(String propertyFile) {
        try {
@@ -15,7 +22,7 @@ public class PropertyLoader {
                properties.load(inputStream);
            }
        } catch (Exception e){
-           System.out.println("Exception : " + e);
+           logger.error("Exception raised while loading property file : " + propertyFile + " \n" + "Exception : " + e);
        } finally {
            try {
                inputStream.close();
@@ -25,13 +32,12 @@ public class PropertyLoader {
        }
       }
 
-    public static Properties getProperties(String propertyFile){
+    public static Map<String,String> getMapProperties(String propertyFile){
         loadProperty(propertyFile);
-        return properties;
+        return new HashMap<String,String>((Map)properties);
     }
 
-    /*public static void main(String[] args) throws IOException {
-        System.out.println(PropertyLoader.getProperties("config.properties").getProperty(KafkaProperty.BOOTSTRAP_SERVERS));
+   /* public static void main(String[] args) throws IOException {
+        System.out.println(PropertyLoader.getMapProperties("config.properties").get(KafkaProperty.BOOTSTRAP_SERVERS));
     }*/
-
 }

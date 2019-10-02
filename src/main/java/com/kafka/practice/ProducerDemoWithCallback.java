@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -24,9 +25,11 @@ public class ProducerDemoWithCallback {
     public static void main(String[] args) {
 
         // create producer properties
-        Properties properties = PropertyLoader.getProperties(propertyFile);
+        Properties properties = new Properties();
 
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getProperty(KafkaProperty.BOOTSTRAP_SERVERS));
+        Map<String,String> map = PropertyLoader.getMapProperties(propertyFile);
+
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, map.get(KafkaProperty.BOOTSTRAP_SERVERS));
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,StringSerializer.class.getName());
 
