@@ -1,0 +1,19 @@
+1. start Zookeeper server :
+zookeeper-server-start.sh ~/Trainning/Kafka/kafka_2.12-2.0.0/config/zookeeper.properties
+
+2. start kafka-server
+kafka-server-start.sh ~/Trainning/Kafka/kafka_2.12-2.0.0/config/server.properties
+
+3. Create topic :
+kafka-topics.sh --zookeeper 127.0.0.1:2181 --create --topic twitter_status_connect --partitions 3 --replication-factor 1
+kafka-topics.sh --zookeeper 127.0.0.1:2181 --create --topic twitter_deletes_connect --partitions 3 --replication-factor 1
+
+4. Provide twitter credential in twitter.properties file
+
+5. Start Consumer to consume data from kafka
+kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic twitter_status_connect --from-beginning
+
+
+6. Execute Command to read data from twitter from kafka-connect directory(/home/lenovo/IdeaProjects/KafkaPratice/kafka-connect)
+connect-standalone.sh connect-standalone.properties  twitter.properties
+
