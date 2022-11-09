@@ -1,5 +1,4 @@
 package com.kafka.kafkaStream;
-
 import com.google.gson.JsonParser;
 import com.kafka.core.propertyLoader.KafkaProperty;
 import com.kafka.core.propertyLoader.PropertyLoader;
@@ -11,20 +10,21 @@ import org.apache.kafka.streams.kstream.KStream;
 
 import java.util.Properties;
 
+
 /**
- * This demonstrate to consume(read) data from kafka topic, perform filter on it and
- * then produce(write) filter data to another kafka topic.
+ * This demonstrate to Streaming(read) data from kafka topic, and write on different topic.
  * <p>
- * To test this we need to start first producer program that will produce data to topic and then
- * after we will use this topic as input topic and perform filter on it.
+ * To test this we need to start first producer program that will produce data to topic and
+ * then open consumer who will consume it
  * <p>
- * create output topic:
- * kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic filter_tweets --create --partitions 3 --replication-factor 1
+ * kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic
  * <p>
- * Consume filter data :
- * kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic filter_tweets --from-beginning
+ * Consume  data :
+ * kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic second_topic --from-beginning
+ *
  */
-public class FilterStreamTweets {
+
+public class StreamingDemo {
     /**
      * Similar to consumer group
      */
@@ -43,6 +43,10 @@ public class FilterStreamTweets {
 
         //input topic to read
         KStream<String, String> kStream = streamsBuilder.stream(input_topic);
+        //Print key and value on console
+        kStream.foreach((key,value)-> System.out.println(key + "  " + value));
+
+        //send data on output topic
         KStream<String, String> filterStream = kStream.filter(
                 (key, jsonValue) -> !jsonValue.isEmpty()
                 //extractUserFollowersInTweet(jsonValue) > 100
@@ -68,18 +72,4 @@ public class FilterStreamTweets {
 
     }
 
-    private static JsonParser jsonParser = new JsonParser();
-
-    private static Integer extractUserFollowersInTweet(String jsonTweets) {
-        try {
-            return jsonParser.parse(jsonTweets)
-                    .getAsJsonObject()
-                    .get("user")
-                    .getAsJsonObject()
-                    .get("followers_count")
-                    .getAsInt();
-        } catch (NullPointerException e) {
-            return 0;
-        }
-    }
 }

@@ -24,7 +24,7 @@ import java.util.Properties;
  * Consume filter data :
  * kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic filter_tweets --from-beginning
  */
-public class FilterStreamTweets {
+public class Streaming_Demo {
     /**
      * Similar to consumer group
      */
