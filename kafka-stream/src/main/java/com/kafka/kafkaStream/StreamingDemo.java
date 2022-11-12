@@ -1,5 +1,9 @@
+
 package com.kafka.kafkaStream;
-import com.google.gson.JsonParser;
+
+import com.kafka.XMLParser.JavaJdbc;
+import com.kafka.XMLParser.Student;
+import com.kafka.XMLParser.XMLParsing;
 import com.kafka.core.propertyLoader.KafkaProperty;
 import com.kafka.core.propertyLoader.PropertyLoader;
 import org.apache.kafka.common.serialization.Serdes;
@@ -8,28 +12,31 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 
+
 import java.util.Properties;
 
 
 /**
- * This demonstrate to Streaming(read) data from kafka topic, and write on different topic.
+ * This class demonstrate reading from Kafka topic and inserting record to MySql database
  * <p>
  * To test this we need to start first producer program that will produce data to topic and
  * then open consumer who will consume it
  * <p>
- * kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic
+ * kafka-console-producer.sh --bootstrap-server localhost:9092 --topic xml_topic
+ *input:
+ *    <?xml version = "1.0"?> <class>    <student rollno = "393">       <firstname>dinkar</firstname>       <lastname>kad</lastname>       <nickname>dinkar</nickname>       <marks>85</marks>    </student> </class>
  * <p>
  * Consume  data :
  * kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic second_topic --from-beginning
- *
  */
+
 
 public class StreamingDemo {
     /**
      * Similar to consumer group
      */
     static private String application_id_config = "demo-kafka-stream";
-    static private String input_topic = "first_topic";
+    static private String input_topic = "xml_topic";
     static private String outut_topic = "second_topic";
     static private Properties properties = new Properties();
 
@@ -43,8 +50,16 @@ public class StreamingDemo {
 
         //input topic to read
         KStream<String, String> kStream = streamsBuilder.stream(input_topic);
+
         //Print key and value on console
-        kStream.foreach((key,value)-> System.out.println(key + "  " + value));
+        kStream.foreach((key, value) ->
+        {
+            System.out.println(value);
+            if(!value.isEmpty() && value!=null) {
+                Student stu = XMLParsing.getStudentDetail(value);
+                JavaJdbc.insertRecordIntoMysql(stu);
+            }
+        });
 
         //send data on output topic
         KStream<String, String> filterStream = kStream.filter(
