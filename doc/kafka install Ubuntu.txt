@@ -1,0 +1,69 @@
+Terminal1:
+Step 1: 
+A.  wget https://archive.apache.org/dist/kafka/3.0.0/kafka_2.13-3.0.0.tgz
+
+
+B.  tar xzf kafka_2.13-3.0.0.tgz
+C.  mv kafka_2.13-3.0.0 ~
+
+
+D.  To access sh file directly add below details in ~/.bashrc file in the end
+    PATH="$PATH:~/kafka_2.13-3.0.0/bin"
+
+E.  zookeeper-server-start.sh ~/kafka_2.13-3.0.0/config/zookeeper.properties
+
+Terminal2 : 
+F.  on another shell
+    ~/kafka_2.13-3.0.0/bin/kafka-server-start.sh ~/kafka_2.13-3.0.0/config/server.properties
+
+kafka-topics.sh --bootstrap-server localhost:9092  --create --topic second_topic --partitions 3 --replication-factor 1
+
+
+Terminal 3: 
+A. Kafka producer : 
+
+A. Create topic
+   kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic 
+
+B. Start kafka producer with properties 
+   kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic --producer-property acks=all
+
+C.  if topic not exist it will create 
+    kafka-console-producer.sh --bootstrap-server localhost:9092 --topic second_topic 
+
+D.  describe topic
+    kafka-topics --bootstrap-server localhost:9092 --topic second_topic  --describe 
+
+
+e.  List all the topic
+    kafka-topics --bootstrap-server localhost:9092 --list
+
+F.   if value is based on key value pair
+     kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic --property parse.key=true --property key.seperator=:
+
+
+
+Terminal 4: 
+A. Kafka Consumer:
+
+A. Read the data at end by default:
+   kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic 
+   kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic second_topic 
+
+  so send message now on producer it will get 
+
+
+B. To get data from beginning
+   kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --from-beginning
+
+   message in not in order 
+   message will be get from each partition, so data is in order within partition
+   If only one partition than all mes in order but no scaling as only one consumer
+
+C. To get extra information
+   kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --formatter kafka.tools.DefaultMessageFormatter 
+   --property print.timestamp=true --property print.keys=true --property print.value=true
+   --from-beginning
+   
+   
+   
