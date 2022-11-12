@@ -3,31 +3,46 @@ package com.kafka.XMLParser;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaJdbc {
 
-    public  static void insertRecordIntoMysql(Student stud){
-       try {
+    public  static void insertRecordIntoMysql(List<Student> studList){
+       Connection conn=null;
+        try {
            Class.forName("com.mysql.jdbc.Driver");
-           Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "M_zaq1xsw2");
+           conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "M_zaq1xsw2");
            String query = " insert into Student (rollno,firstname,lastname,nickname,marks)"
                    + " values (?, ?, ?, ?, ?)";
 
            // create the mysql insert preparedstatement
            PreparedStatement preparedStmt = conn.prepareStatement(query);
-           preparedStmt.setInt (1, stud.getRollno());
-           preparedStmt.setString (2, stud.getFirstname());
-           preparedStmt.setString   (3, stud.getLastname());
-           preparedStmt.setString(4, stud.getNickname());
-           preparedStmt.setInt    (5, stud.getMarks());
+            int i =0;
+           for (Student stud:studList) {
+               preparedStmt.setInt(1, stud.getRollno());
+               preparedStmt.setString(2, stud.getFirstname());
+               preparedStmt.setString(3, stud.getLastname());
+               preparedStmt.setString(4, stud.getNickname());
+               preparedStmt.setInt(5, stud.getMarks());
 
-           // execute the preparedstatement
-           preparedStmt.execute();
-
-           conn.close();
+               preparedStmt.addBatch();
+                i=i+1;
+               if (i % 1000 == 0 || i == studList.size()) {
+                   preparedStmt.executeBatch(); // Execute every 1000 items.
+               }
+           }
 
        } catch (Exception e) {
            e.printStackTrace();
+       } finally {
+            try {
+                if (conn != null)
+                    conn.close();
+            }catch (SQLException s) {
+                s.printStackTrace();
+            }
        }
     }
 
@@ -38,7 +53,9 @@ public class JavaJdbc {
            stud.setFirstname("b");
            stud.setNickname("c");
            stud.setRollno(11);
-        JavaJdbc.insertRecordIntoMysql(stud);
+           List st = new ArrayList<Student>();
+           st.add(stud);
+        JavaJdbc.insertRecordIntoMysql(st);
         System.out.println("record inserted");
     }
 }

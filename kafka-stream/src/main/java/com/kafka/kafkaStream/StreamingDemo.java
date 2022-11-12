@@ -13,6 +13,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 
 
+import java.util.List;
 import java.util.Properties;
 
 
@@ -56,8 +57,8 @@ public class StreamingDemo {
         {
             System.out.println(value);
             if(!value.isEmpty() && value!=null) {
-                Student stu = XMLParsing.getStudentDetail(value);
-                JavaJdbc.insertRecordIntoMysql(stu);
+                List<Student> stuList = XMLParsing.getStudentList(value);
+                JavaJdbc.insertRecordIntoMysql(stuList);
             }
         });
 
