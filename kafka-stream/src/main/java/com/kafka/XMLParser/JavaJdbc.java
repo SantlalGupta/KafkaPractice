@@ -9,6 +9,12 @@ import java.util.List;
 
 public class JavaJdbc {
 
+    /**
+     * Table create statement
+     *  create table student (  rollno int, firstname varchar(40), lastname varchar(30), nickname varchar(30), marks int);
+     * @param studList
+     */
+
     public  static void insertRecordIntoMysql(List<Student> studList){
        Connection conn=null;
         try {

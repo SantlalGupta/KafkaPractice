@@ -25,7 +25,7 @@ import java.util.Properties;
  * <p>
  * kafka-console-producer.sh --bootstrap-server localhost:9092 --topic xml_topic
  *input:
- *    <?xml version = "1.0"?> <class>    <student rollno = "393">       <firstname>dinkar</firstname>       <lastname>kad</lastname>       <nickname>dinkar</nickname>       <marks>85</marks>    </student> </class>
+ *   <?xml version = "1.0"?> <class>    <student rollno = "397">       <firstname>Raj</firstname>       <lastname>kamal</lastname>       <nickname>raj</nickname>       <marks>75</marks>    </student>    <student rollno = "398">       <firstname>raju</firstname>       <lastname>ram</lastname>       <nickname>kamal</nickname>       <marks>95</marks>    </student>    <student rollno = "399">       <firstname>Uzer</firstname>       <lastname>Ahmed</lastname>       <nickname>Uzer</nickname>       <marks>79</marks>    </student> </class> 
  * <p>
  * Consume  data :
  * kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic second_topic --from-beginning
